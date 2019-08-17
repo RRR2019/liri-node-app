@@ -39,14 +39,18 @@ switch(action){
 
 //function Spotify to acces the Spotify API
 function spot(song){
-    spotify.search({ type: 'track', query: song })
-  .then(function(response) {
-    console.log(response);
+    spotify.search({ type: "track", query: song }).then(
+    function(response) {
+        console.log(response.tracks.items[0].artists[0].name); // Get Artist
+        console.log(response.tracks.items[0].name); // Get Song Name
+        console.log(response.tracks.items[0].album.name); // Get Album Name
+        console.log(response.tracks.items[0].album.external_urls.spotify); // Get Link for song
+
+
   })
   .catch(function(err) {
     console.log(err);
   });
-
 }
 
 
