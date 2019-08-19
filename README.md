@@ -10,7 +10,7 @@
 
    * `movie-this`
    It will search for a movie title and give Title, Release Date, IMBD Rating, Country, Plot and Actors
-   Ex: spotify-this-song "toy story"
+   Ex: movie-this "toy story"
 
    * `do-what-it-says` 
    Reads and does whatever the random.txt says.
