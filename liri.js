@@ -18,18 +18,28 @@ let action = input[2];
 let title = input[3];
 
 
-//switch function to determine what the program will do with the first argument the user.
+//switch function to determine what the program will do with the first argument the user
 switch(action){
     case "spotify-this-song":
-        spot(title) //call function with spotify API
+        if(title){ //if user inputs a title then call spotify API function
+        spot(title) 
+    }
+        else{ // if user leaves it blank send a Radiohead song as the title
+        spot("weird fishes");
+        }
     break;  
 
     case "movie-this":
-        movies(title); //call function with movie API and axios
+        if(title){
+        movies(title); //if user inputs a title then call movie API function
+        }
+        else{//if user leaves it blank, send "Pulp Fiction as the title
+            movies("pulp fiction")
+        }
     break;
 
     case "do-what-it-says":
-        Read();
+        readText();
     break;
     
     default:
@@ -41,28 +51,33 @@ switch(action){
 function spot(song){
     spotify.search({ type: "track", query: song }).then( // search by "track" user input
     function(response) {
-        console.log(`
-    -------------   
-    Artist: ${response.tracks.items[0].artists[0].name} 
-    Song: ${response.tracks.items[0].name} 
-    Album: ${response.tracks.items[0].album.name}
-    Spotify Link: ${response.tracks.items[0].external_urls.spotify}
-    -------------
-        `); // print artist name, song, album and the link to spotify
-
+        
+    let songInfo=`
+        -------------   
+        Artist: ${response.tracks.items[0].artists[0].name} 
+        Song: ${response.tracks.items[0].name} 
+        Album: ${response.tracks.items[0].album.name}
+        Spotify Link: ${response.tracks.items[0].external_urls.spotify}
+        -------------
+            `;  // saving song info in a variable 
+        
+        console.log(songInfo); // print artist name, song, album and the link to spotify
+        saveSearches(songInfo);
   })
   .catch(function(err) {
     console.log(err);
   });
 }
 
-// function 
+// movie function using omdb API
 function movies(title){
-    const ombdLink = "http://www.omdbapi.com/?t="+ title +"&y=&plot=short&apikey=trilogy"
+    //Link with the user selected title or default value.
+     let omdbLink = "http://www.omdbapi.com/?t="+ title +"&y=&plot=short&apikey=trilogy" 
 
-    axios.get(ombdLink).then(
+    axios.get(omdbLink).then(
   function(response) {
-    console.log(`
+    
+    let movieInfo=`
     -------------   
     Title: ${response.data.Title} 
     Release Date: ${response.data.Year} 
@@ -71,8 +86,11 @@ function movies(title){
     Plot: ${response.data.Plot}
     Actors: ${response.data.Actors}
     -------------
-        `); // print movie title, year, imdb rating, country of production, plot and actors
-  })
+        `; // saving movie info in a variable 
+
+    console.log(movieInfo); // print movie title, year, imdb rating, country of production, plot and actors
+    saveSearches(movieInfo);
+})
   .catch(function(error) {
     if (error.response) {
       // The request was made and the server responded with a status code
@@ -93,6 +111,38 @@ function movies(title){
     }
     console.log(error.config);
   });
+}
+
+function readText(){
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+        // Reading contents of txt file and making a 2 element array
+         var dataArr = data.split(",");
+
+        spot(dataArr[1]);
+      
+      
+    });
+}
+
+function saveSearches(log){
+    fs.appendFile("log.txt", log, function(err) {
+
+        // If an error was experienced we will log it.
+        if (err) {
+          console.log(err);
+        }
+      
+      
+      });
+
 }
 
 
