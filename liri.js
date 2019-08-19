@@ -20,29 +20,34 @@ let title = input[3];
 
 //switch function to determine what the program will do with the first argument the user
 switch(action){
-    case "spotify-this-song":
+    case "spotify-this-song": // Search for a song
         if(title){ //if user inputs a title then call spotify API function
         spot(title) 
+        saveSearches(action + " " + title)// save search into the log.txt
     }
         else{ // if user leaves it blank send a Radiohead song as the title
         spot("weird fishes");
+        saveSearches(action + " weird fishes") // save search into the log.txt
         }
     break;  
 
-    case "movie-this":
+    case "movie-this": // search for a movie
         if(title){
         movies(title); //if user inputs a title then call movie API function
+        saveSearches(action + " " + title)// save search into the log.txt
         }
         else{//if user leaves it blank, send "Pulp Fiction as the title
             movies("pulp fiction")
+            saveSearches(action + " pulp fiction")// save search into the log.txt
         }
     break;
 
-    case "do-what-it-says":
-        readText();
+    case "do-what-it-says": // do whatever the text file says
+        readText(); //call function to read the text file
+        saveSearches(action); //save the action into log.txt
     break;
     
-    default:
+    default: // if user inputs something different tell them to try again.
         console.log("Try again");
     break;    
 }
@@ -62,7 +67,7 @@ function spot(song){
             `;  // saving song info in a variable 
         
         console.log(songInfo); // print artist name, song, album and the link to spotify
-        saveSearches(songInfo);
+        saveSearches(songInfo); // save song info into the log.txt
   })
   .catch(function(err) {
     console.log(err);
@@ -89,7 +94,7 @@ function movies(title){
         `; // saving movie info in a variable 
 
     console.log(movieInfo); // print movie title, year, imdb rating, country of production, plot and actors
-    saveSearches(movieInfo);
+    saveSearches(movieInfo); // save movie info to the log.txt
 })
   .catch(function(error) {
     if (error.response) {
@@ -125,21 +130,18 @@ function readText(){
         console.log(data);
         // Reading contents of txt file and making a 2 element array
          var dataArr = data.split(",");
-
-        spot(dataArr[1]);
+        spot(dataArr[1]); // search for the song in random.txt file
       
       
     });
 }
-
-function saveSearches(log){
-    fs.appendFile("log.txt", log, function(err) {
-
-        // If an error was experienced we will log it.
+//function to save results into a log.txt
+function saveSearches(log){ 
+    fs.appendFile("log.txt", log, function(err) { //print out log into log.txt file
+        // If an error was experienced log it
         if (err) {
           console.log(err);
         }
-      
       
       });
 
